@@ -20,16 +20,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-
 public class HTTPFetcher {
 
+    public static String url = "http://elementz.pierrezemb.fr";
+    //public static String url = "http://127.0.0.1:3000/";
+
+    public Gson myGson;
 
 
     // HTTP GET request
-    private void sendGet() throws Exception {
-
-        String url = "http://gl.pierrezemb.fr";
+    public List<Player> sendGet() throws Exception {
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -51,24 +51,39 @@ public class HTTPFetcher {
         }
         in.close();
 
-        //print result
-        System.out.println(response.toString());
+        // http://www.javabeat.net/parsing-json-using-java-and-gson-library/
+        myGson = new Gson();
+        JsonParser jsonParser = new JsonParser();
+        JsonArray userArray =  jsonParser.parse(response.toString()).getAsJsonArray();
+        List PlayerUsers = new ArrayList<fr.pierrezemb.isen.elementz.Player>();
+        for ( JsonElement aUser : userArray ){
+            fr.pierrezemb.isen.elementz.Player aPlayerUser = myGson.fromJson(aUser, fr.pierrezemb.isen.elementz.Player.class);
+            PlayerUsers.add(aPlayerUser);
+        }
+        return PlayerUsers;
 
     }
 
     // HTTP POST request
-    public List<Player> sendPost(String name, int score) throws Exception {
+    public void sendPost(String name, int score) throws Exception {
 
-
-        String url = "http://gl.pierrezemb.fr";
         URL obj = new URL(url);
-        HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        System.out.println(name+":"+score);
 
         //add request header
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
 
-        String input = "{ \"name\": \""+name+"\",\"score\":\""+score+"\"}";
+        myGson = new Gson();
+
+        Player p = new Player();
+        p.name = name;
+        p.score = score;
+
+        String input = myGson.toJson(p);
+        System.out.println(input);
 
         // Send post request
         con.setDoOutput(true);
@@ -91,19 +106,7 @@ public class HTTPFetcher {
         }
         in.close();
 
-        //print result
-        System.out.println(response.toString());
 
-        // http://www.javabeat.net/parsing-json-using-java-and-gson-library/
-        Gson myGson = new Gson();
-        JsonParser jsonParser = new JsonParser();
-        JsonArray userArray =  jsonParser.parse(response.toString()).getAsJsonArray();
-        List PlayerUsers = new ArrayList<>();
-        for ( JsonElement aUser : userArray ){
-           Player aPlayerUser = myGson.fromJson(aUser, Player.class);
-            PlayerUsers.add(aPlayerUser);
-        }
-        return PlayerUsers;
     }
 
 }

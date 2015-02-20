@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /**
  * Created by pierrezemb on 26/01/15.
@@ -26,6 +27,8 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
     public Thread threadProgressbar;
 
     public static boolean gameOn;
+
+    public static HTTPFetcher netscape;
 
 
     // Paths for the ball's sprite
@@ -53,6 +56,8 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
     public static boolean isFirstClick;
 
+    public static String userName;
+
     // model
     public static ElementZ_Model model;
 
@@ -75,19 +80,26 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
         super("ElementZ");
 
+        userName = "";
+        netscape = new HTTPFetcher();
+        this.showTop();
+
         // -1 is impossible for a value !
         last_click_x = -1;
         last_click_y = -1;
         isFirstClick = false;
         isWorking = false;
 
+        // starting a new model
         this.model = new ElementZ_Model();
 
+        // Creates the UI
         createUI();
 
+        // Start timer
         startTimerThread();
 
-        // We register as un listener of the model
+        // We register as an listener of the model
         model.addModelListener(this);
     }
 
@@ -119,6 +131,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
     private void startTimerThread() {
         this.gameOn = true;
 
+        showTop();
 
         playButton.setText("Restart");
 
@@ -127,15 +140,10 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main_Window.gameOn = false;
-                JOptionPane
-                        .showMessageDialog(
-                        menuBar,
-                        "<html><h2>YOLO the end !</h2>"
-                                + "The goal is to align 3 or more balls. Try to make the best score!<br>" +
-                                "Made by Pierre Zemb<br>" +
-                                "<a href=\"https://pierrezemb.fr\">https://pierrezemb.fr</a></html>",
-                        "About ElementZ",
-                        JOptionPane.INFORMATION_MESSAGE);
+                Main_Window.userName = JOptionPane.showInputDialog(menuBar, "Time's up! What's your name?");
+                if (Main_Window.userName.length() !=0) {
+                    push2Cloud();
+                }
             }
         };
         timer = new Timer(TIME_GAME*1000, EndPopup);
@@ -153,6 +161,14 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         }});
         threadProgressbar.start();
 
+    }
+
+    private void push2Cloud() {
+        try {
+            netscape.sendPost(this.userName,this.model.getScore());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createMenu() {
@@ -184,7 +200,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
                         .showMessageDialog(
                                 menuBar,
                                 "<html><h2>Element Z</h2>"
-                                        + "The goal is to align 3 or more balls. Try to make the best score!<br>" +
+                                        + "The goal is to align 3 or more balls. Try to make the best score in one minute!<br>" +
                                         "Made by Pierre Zemb<br>" +
                                         "<a href=\"https://pierrezemb.fr\">https://pierrezemb.fr</a></html>",
                                 "About ElementZ",
@@ -343,6 +359,14 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
     public void pushScore(){
         System.out.println(model.getScore());
         ScoreLabel.setText(String.valueOf(this.model.getScore()));
+    }
+
+    public void showTop(){
+        try {
+            ScoreList.setListData(netscape.sendGet().toArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
