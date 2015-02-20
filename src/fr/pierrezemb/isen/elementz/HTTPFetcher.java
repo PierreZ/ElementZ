@@ -51,6 +51,7 @@ public class HTTPFetcher {
         }
         in.close();
 
+        // How to use Gson
         // http://www.javabeat.net/parsing-json-using-java-and-gson-library/
         myGson = new Gson();
         JsonParser jsonParser = new JsonParser();

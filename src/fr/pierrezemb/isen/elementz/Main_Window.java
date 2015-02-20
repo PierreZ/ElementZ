@@ -127,7 +127,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         addListeners();
         setVisible(true);
     }
-
+    // Start timer
     private void startTimerThread() {
         this.gameOn = true;
 
@@ -162,7 +162,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         threadProgressbar.start();
 
     }
-
+    // push data on my server
     private void push2Cloud() {
         try {
             netscape.sendPost(this.userName,this.model.getScore());
@@ -171,10 +171,10 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         }
     }
 
+    // build the menu
     private void createMenu() {
         menuBar = new JMenuBar();
 
-        // build the File menu
         fileMenu = new JMenu("ElementZ");
         openMenuItem = new JMenuItem("Quit");
         openMenuItem.addActionListener(new ActionListener() {
@@ -260,10 +260,12 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         }
     }
 
+    // Return a ball
     public Component getElement(int x, int y){
         return LeftPanel.getComponent(x * 8 + y);
     }
 
+    // Repaint the balls, obviously
     public void repaintBalls(){
         if ( SwingUtilities.isEventDispatchThread () ) {
             int i,j;
@@ -307,6 +309,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
 
 
+    // Method callend on there's a change on the model
     @Override
     public void modelChanged(ModelChangedEvent event) {
         new Thread() {
@@ -316,6 +319,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
         }.run();
     }
 
+    // Same method than model.play but with thread sleep...
     public void refresh(){
         System.out.println("------Que le thread commence !---------------");
 
@@ -325,42 +329,41 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
                 while(model.notReadyToPlay())
                 {
-                    // retire les listeners des boules et du bouton pour empêcher le joueur de jouer tant que la grille n'est pas prête
 
+                    // adding score
                     this.model.addScore();
 
                     try{Thread.sleep(SLEEP_TIMER);}catch(InterruptedException e){};
-                    //	supprime la famille
+
                     model.deleteTheSame();
 
                     repaintBalls();
 
                     try{Thread.sleep(SLEEP_TIMER);}catch(InterruptedException e){};
 
-                    // fait tomber les boules
                     model.gravity();
 
-                   repaintBalls();
+                    repaintBalls();
 
                     try{Thread.sleep(SLEEP_TIMER);}catch(InterruptedException e){};
 
-                    // remplit la grille de nouvelles boules
                     model.fillGaps();
 
                     repaintBalls();
                 }
 
         this.isWorking = false;
-        System.out.println("--------------- FINI ------------------------");
         pushScore();
 
     }
 
+    // Push score on the cloud
     public void pushScore(){
         System.out.println(model.getScore());
         ScoreLabel.setText(String.valueOf(this.model.getScore()));
     }
 
+    // Refresh JList with data on the backend
     public void showTop(){
         try {
             ScoreList.setListData(netscape.sendGet().toArray());
