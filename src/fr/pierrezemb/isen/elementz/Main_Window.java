@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 /**
  * Created by pierrezemb on 26/01/15.
@@ -30,22 +29,32 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
     public static HTTPFetcher netscape;
 
+    // String to replace classical state
+    public static String CLASSIC_STATE = "boule";
+    public static String OVER_STATE="boule_o";
+    public static String SELECTED_STATE = "boule_s";
 
     // Paths for the ball's sprite
-    public static String BLACKBALL_PATH="images/boule_0.jpg";
-    public static String REDBALL_PATH="images/boule_1.jpg";
-    public static String GREENBALL_PATH="images/boule_2.jpg";
-    public static String BLUEBALL_PATH="images/boule_3.jpg";
-    public static String PURPLEBALL_PATH="images/boule_4.jpg";
-    public static String YELLOWBALL_PATH="images/boule_5.jpg";
-    public static String GOLDBALL_PATH="images/boule_6.jpg";
+    // https://stackoverflow.com/questions/16924347/java-path-imageicon-url-jar
+    public static String IMAGE_ROOT = "images/";
+    // Usecase for MouseHandler calculator
+    public static String EXAMPLE= "_0.jpg";
 
-    public static ImageIcon RED = new ImageIcon(REDBALL_PATH);
-    public static ImageIcon GREEN = new ImageIcon(GREENBALL_PATH);
-    public static ImageIcon BLUE = new ImageIcon(BLUEBALL_PATH);
-    public static ImageIcon PURPLE = new ImageIcon(PURPLEBALL_PATH);
-    public static ImageIcon YELLOW= new ImageIcon(YELLOWBALL_PATH);
-    public static ImageIcon GOLD= new ImageIcon(GOLDBALL_PATH);
+    // Classical paths
+    public static String BLACKBALL_PATH= IMAGE_ROOT+CLASSIC_STATE+"_0.jpg";
+    public static String REDBALL_PATH= IMAGE_ROOT+CLASSIC_STATE+"_1.jpg";
+    public static String GREENBALL_PATH=IMAGE_ROOT+CLASSIC_STATE+"_2.jpg";
+    public static String BLUEBALL_PATH= IMAGE_ROOT+CLASSIC_STATE+"_3.jpg";
+    public static String PURPLEBALL_PATH= IMAGE_ROOT+CLASSIC_STATE+"_4.jpg";
+    public static String YELLOWBALL_PATH=IMAGE_ROOT+CLASSIC_STATE+"_5.jpg";
+    public static String GOLDBALL_PATH= IMAGE_ROOT+CLASSIC_STATE+"_6.jpg";
+
+    public static ImageIcon RED = new ImageIcon(Main_Window.class.getClassLoader().getResource(REDBALL_PATH));
+    public static ImageIcon GREEN = new ImageIcon(Main_Window.class.getClassLoader().getResource(GREENBALL_PATH));
+    public static ImageIcon BLUE = new ImageIcon(Main_Window.class.getClassLoader().getResource(BLUEBALL_PATH));
+    public static ImageIcon PURPLE = new ImageIcon(Main_Window.class.getClassLoader().getResource(PURPLEBALL_PATH));
+    public static ImageIcon YELLOW= new ImageIcon(Main_Window.class.getClassLoader().getResource(YELLOWBALL_PATH));
+    public static ImageIcon GOLD= new ImageIcon(Main_Window.class.getClassLoader().getResource(GOLDBALL_PATH));
 
 
 

@@ -1,20 +1,13 @@
 package fr.pierrezemb.isen.elementz;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * Created by pierrezemb on 17/02/15.
  */
 public class MouseHandler extends MouseAdapter {
-
-    // String to replace classical state
-    public static String CLASSIC_STATE = "boule";
-    public static String OVER_STATE="boule_o";
-    public static String SELECTED_STATE = "boule_s";
 
 
     @Override
@@ -56,21 +49,18 @@ public class MouseHandler extends MouseAdapter {
                 String path = ((JLabel) e.getSource()).getIcon().toString();
 
 
-                if (path.contains(SELECTED_STATE)) {
-                    path = path.replace(SELECTED_STATE, CLASSIC_STATE);
-                    ((JLabel) e.getSource()).setIcon(new ImageIcon(path));
+                if (path.contains(Main_Window.SELECTED_STATE)) {
+                    ((JLabel)e.getSource()).setIcon(changeSprite(path, Main_Window.CLASSIC_STATE));
                     Main_Window.last_click_x = -1;
                     Main_Window.last_click_y = -1;
                     return;
                 }
-                if (path.contains(OVER_STATE)) {
-                    path = path.replace(OVER_STATE, SELECTED_STATE);
-                    ((JLabel) e.getSource()).setIcon(new ImageIcon(path));
+                if (path.contains(Main_Window.OVER_STATE)) {
+                    ((JLabel)e.getSource()).setIcon(changeSprite(path, Main_Window.SELECTED_STATE));
                     return;
                 }
                 // classic state as default
-                path = path.replace(CLASSIC_STATE, SELECTED_STATE);
-                ((JLabel) e.getSource()).setIcon(new ImageIcon(path));
+                ((JLabel)e.getSource()).setIcon(changeSprite(path, Main_Window.SELECTED_STATE));
             }
 
         }
@@ -96,9 +86,9 @@ public class MouseHandler extends MouseAdapter {
         String path = ((JLabel)e.getSource()).getIcon().toString();
 
         // Si the ball is already selected, don't do anything
-        if (!path.contains( SELECTED_STATE) && !path.contains( OVER_STATE)){
-            path = path.replace(CLASSIC_STATE, OVER_STATE);
-            ((JLabel)e.getSource()).setIcon(new ImageIcon(path));
+        if (!path.contains( Main_Window.SELECTED_STATE) && !path.contains( Main_Window.OVER_STATE)){
+            ((JLabel)e.getSource()).setIcon(changeSprite(path, Main_Window.OVER_STATE));
+
         }
 
 
@@ -110,13 +100,22 @@ public class MouseHandler extends MouseAdapter {
         if (!Main_Window.gameOn){
             return;
         }
+
         String path = ((JLabel)e.getSource()).getIcon().toString();
-        path = path.replace(OVER_STATE, CLASSIC_STATE);
-        ((JLabel) e.getSource()).setIcon(new ImageIcon(path));
+        if (!path.contains( Main_Window.SELECTED_STATE)){
+            ((JLabel)e.getSource()).setIcon(changeSprite(path, Main_Window.CLASSIC_STATE));
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         super.mouseDragged(e);
     }
+
+
+public ImageIcon changeSprite(String path, String wanted){
+    String ball_color = path.substring(path.length() - Main_Window.EXAMPLE.length());
+    return new ImageIcon(Main_Window.class.getClassLoader().getResource(Main_Window.IMAGE_ROOT+wanted+ball_color));
+}
+
 }
