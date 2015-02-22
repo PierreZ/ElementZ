@@ -82,7 +82,6 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
         userName = "";
         netscape = new HTTPFetcher();
-        this.showTop();
 
         // -1 is impossible for a value !
         last_click_x = -1;
@@ -140,9 +139,12 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Main_Window.gameOn = false;
-                Main_Window.userName = JOptionPane.showInputDialog(menuBar, "Time's up! What's your name?");
+                Main_Window.userName = JOptionPane.showInputDialog(menuBar,"<html><h2>Time's up!</h2>"+
+                        "You've made <b>"+Main_Window.model.getScore()+"</b> in a minute!<br>"+
+                        "What's your name?<br></html>");
                 if (Main_Window.userName.length() !=0) {
                     push2Cloud();
+                    showTop();
                 }
             }
         };
@@ -307,9 +309,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
     }
 
-
-
-    // Method callend on there's a change on the model
+    // Method called on there's a change on the model
     @Override
     public void modelChanged(ModelChangedEvent event) {
         new Thread() {
@@ -321,8 +321,6 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
     // Same method than model.play but with thread sleep...
     public void refresh(){
-        System.out.println("------Que le thread commence !---------------");
-
 
         this.isWorking = true;
         repaintBalls();
@@ -357,7 +355,7 @@ public class Main_Window extends JFrame implements ElementZ_Model_Listener{
 
     }
 
-    // Push score on the cloud
+    // print score on the window
     public void pushScore(){
         System.out.println(model.getScore());
         ScoreLabel.setText(String.valueOf(this.model.getScore()));

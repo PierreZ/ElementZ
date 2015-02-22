@@ -106,8 +106,6 @@ public class HTTPFetcher {
             response.append(inputLine);
         }
         in.close();
-
-
     }
 
 }
